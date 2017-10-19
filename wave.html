@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>示波器</title>
+	<style>
+		html, body{
+			height: 100%;
+			width: 100%;
+		}
+		html{
+			overflow: hidden;
+			background-color: black;
+		}
+		body{
+			top: 50%;
+			left: 50%;
+			position: absolute;
+			margin: 0;
+		}
+		div{
+			width: 3%;
+			height: 3%;
+			transform: translateX(-50%) translateY(-50%);
+			position: absolute;
+			border-radius: 100%;
+			left: 150%;
+			top: 150%;
+		}
+	</style>
+</head>
+
+<body>
+	<script>
+		"use strict";
+
+		let T = 1000 / 60;
+		let smooth = 17;
+		let x = t => 2 * (t / T % 1 - 0.5);
+		let y = t => Math.sin(t * 4 * Math.PI / T / 0.999);
+		let color = t => Math.abs((t / 1e3) % 2 - 1) * 0xffffff;
+
+		const [start, stop] = (() => {
+			let anim;
+			let timer;
+			let t;
+			const body = document.body;
+			const new_div = document.createElement.bind(document, "div");
+			const update = now => {
+				timer = setTimeout(() => anim = requestAnimationFrame(update), 0);
+				const step = T / smooth ** 2;
+				for(t = Math.max(t, now - T + step); t <= now; t += step){
+					try{
+						const dot = new_div();
+						const dot_style = dot.style;
+						dot_style.left = 50 * x(t) + "%";
+						dot_style.top = -50 * y(t) + "%";
+						const color_code = Math.round(color(t)).toString(16);
+						dot_style.backgroundColor = "#" + "0".repeat(6 - color_code.length) + color_code;
+						setTimeout(() => {
+							setTimeout(() => body.removeChild(dot), t + T - now);
+							body.appendChild(dot);
+						}, 0);
+					}catch(error){}
+				}
+			};
+			const stop = () => {
+				clearTimeout(timer);
+				cancelAnimationFrame(anim);
+			};
+			return [
+				() => {
+					stop();
+					update(t = performance.now());
+				},
+				stop,
+			];
+		})();
+		start();
+
+		addEventListener("scroll", () => void scrollTo(0, 0));
+		addEventListener("dragstart", event => void event.preventDefault());
+		//addEventListener("contextmenu", event => void event.preventDefault());
+	</script>
+</body>
+
+</html>

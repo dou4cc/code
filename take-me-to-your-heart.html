@@ -1,0 +1,365 @@
+﻿<!--
+Copyright 2017 豆成成 dou4cc@live.cn
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Loading</title>
+	<style>
+		html{
+			overflow: hidden;
+		}
+		body{
+			margin: 0;
+			text-align: center;
+			position: absolute;
+			top: 50%;
+			left: 35px;
+			right: 35px;
+			font: 1.8em sans-serif;
+		}
+		#hr{
+			margin-top: -0.5px;
+			border-bottom: none;
+			border-color: black;
+			left: 0;
+			right: 0;
+			position: fixed;
+		}
+		#marquee{
+			background-color: white;
+			box-shadow: white 0 0 35px 35px;
+			position: relative;
+			cursor: default;
+		}
+		#marquee span{
+			position: relative;
+			z-index: 1;
+			white-space: pre-wrap;
+			word-wrap: break-word;
+		}
+	</style>
+</head>
+
+<body>
+	<hr id="hr">
+	<main></main>
+	<video src="https://dou4cc.github.io/resource/take-me-to-your-heart.mp3" id="song" hidden></video>
+	<script type="application/lrc" id="lrc">
+		[00:00.00]Take Me to Your Heart<br>吻别<br>Michael Learns To Rock «Take Me to Your Heart»<br>张学友《Lpcd45之等你等到我心痛》
+		[00:15.00]
+		[00:17.34]Hiding from the rain and snow.<br>前尘往事成云烟
+		[00:20.47]Trying to forget but I won't let go.<br>消散在彼此眼前
+		[00:25.07]Looking at a crowded street.<br>就连说过了再见
+		[00:28.76]Listening to my own heart beat.<br>也看不见你有些哀怨
+		[00:32.97]So many people<br>给我的一切
+		[00:36.76]all around the world<br>你不过是在敷衍
+		[00:40.87]tell me where do I find<br>你笑的越无邪
+		[00:44.46]someone like you girl.<br>我就会爱你爱得更狂野
+		[00:47.96]Take me to your heart.<br>总在刹那间
+		[00:49.89]Take me to your soul.<br>有一些了解
+		[00:51.87]Give me your hand before I'm old.<br>说过的话不可能会实现
+		[00:55.86]Show me what love is.<br>就在一转眼
+		[00:57.95]Haven't got a clue.<br>发现你的脸
+		[00:59.78]Show me that wonders can be true.<br>已经陌生不会再像从前
+		[01:03.69]They say nothing lasts forever.<br>我的世界开始下雪
+		[01:08.13]We are only here today.<br>冷得让我无法多爱一天
+		[01:12.05]Love is now or never.<br>冷得连隐藏的遗憾
+		[01:16.15]Bring me far away.<br>都那么的明显
+		[01:19.44]Take me to your heart.<br>我和你吻别
+		[01:22.07]Take me to your soul.<br>在无人的街
+		[01:24.32]Give me your hand and hold me.<br>让风痴笑我不能拒绝
+		[01:27.33]Show me what love is.<br>我和你吻别
+		[01:29.70]Be my guiding star.<br>在狂乱的夜
+		[01:32.05]It's easy.<br>我的心
+		[01:33.97]Take me to your heart.<br>等着迎接伤悲
+		[01:39.00]
+		[02:11.42]Standing on a mountain high.<br>想要给你的思念
+		[02:14.66]Looking at the moon through a clear blue sky.<br>就像风筝断了线
+		[02:19.21]I should go and see some friends<br>飞不进你的世界
+		[02:22.56]but they don't really comprehend.<br>也温暖不了你的视线
+		[02:27.11]Don't need too much talking.<br>我已经看见
+		[02:30.77]Without saying anything<br>一出悲剧正上演
+		[02:34.97]all I need is someone<br>剧终没有喜悦
+		[02:38.43]who makes me wanna sing.<br>我仍然躲在你的梦里面
+		[02:41.76]Take me to your heart.<br>总在刹那间
+		[02:43.87]Take me to your soul.<br>有一些了解
+		[02:45.92]Give me your hand before I'm old.<br>说过的话不可能会实现
+		[02:49.96]Show me what love is.<br>就在一转眼
+		[02:52.03]Haven't got a clue.<br>发现你的脸
+		[02:53.91]Show me that wonders can be true.<br>已经陌生不会再像从前
+		[02:57.85]They say nothing lasts forever.<br>我的世界开始下雪
+		[03:02.37]We are only here today.<br>冷得让我无法多爱一天
+		[03:06.66]Love is now or never.<br>冷得连隐藏的遗憾
+		[03:10.35]Bring me far away.<br>都那么的明显
+		[03:13.51]Take me to your heart.<br>我和你吻别
+		[03:15.99]Take me to your soul.<br>在无人的街
+		[03:18.34]Give me your hand and hold me.<br>让风痴笑我不能拒绝
+		[03:21.33]Show me what love is.<br>我和你吻别
+		[03:23.82]Be my guiding star.<br>在狂乱的夜
+		[03:26.19]It's easy.<br>我的心
+		[03:28.14]Take me to your heart.<br>等着迎接伤悲
+		[03:30.91]Take me...<br>我和
+		[03:34.01]to your heart.<br>你吻别
+		[03:35.86]Take me to your soul.<br>在无人的街
+		[03:38.06]Give me your hand and hold me.<br>让风痴笑我不能拒绝
+		[03:40.93]Show me what love is.<br>我和你吻别
+		[03:43.59]Be my guiding star.<br>在狂乱的夜
+		[03:45.96]It's easy.<br>我的心
+		[03:47.77]Take me to your heart.<br>等着迎接伤悲
+		[03:52.17]
+	</script>
+	<script>
+		"use strict";
+
+		const $ = (...args) => document.querySelector(...args);
+		const new_element = (...args) => document.createElement(...args);
+
+		const timeline = ((offset, source,
+			$1 = ([stat, ...rest], flags, content) => [
+				...(
+					flags = stat.match(/\[([^\]]+)\]/ug),
+					flags
+					? flags.map((
+						content = stat.match(/^(?:\[[^\]]+\]\s*)+(.*)$/u)[1],
+						flag => [flag, content]
+					))
+					: []
+				),
+				...(rest.length > 0 ? $1(rest) : []),
+			],
+			$2 = (map,
+				$ = ([[key, value], ...rest], match) => [
+					...(
+						match = key.match(/^\[(\d+):(\d+)(?:\.(\d+))?\]$/u),
+						match
+						? [[
+							Math.max(0, offset + match[1] * 6e4 + match[2] * 1e3 + (match[3] * 10 || 0)),
+							value,
+						]]
+						: []
+					),
+					...(rest.length > 0 ? $(rest) : []),
+				]
+			) => [...new Map([[0, ""], ...$([...map])])].sort(([a], [b]) => a - b)
+		) => $2(new Map($1(source.replace(/\r?\n/g, "\r").trim().split(/(?:\s*\r)+\s*/ug)))))
+		(0, $("#lrc").textContent);
+
+		const n$span = (((lrcs,
+			span = new_element("span"),
+			$ = ([[_, content], ...rest], span,
+				result = new_element("span")
+			) => (
+				result.innerHTML = content ? content : " ",
+				span.childElementCount
+				? result.innerHTML = "<br>" + result.innerHTML
+				: span.hidden = true,
+				result.insertBefore(span, result.firstChild),
+				[
+					result,
+					...(rest.length > 0 ? $(rest, result) : []),
+				]
+			)
+		) => [span, ...$(lrcs, span)])
+		(timeline));
+
+		const marquee = (marquee => (marquee.appendChild(n$span[n$span.length - 1]), marquee))(new_element("span"));
+		const main = $("main");
+		main.appendChild(marquee).id = "marquee";
+
+		const span$n = (map => span => map.get(span))(new Map(n$span.map((span, n) => [span, n])));
+
+		const $time = ((list, last, bottom, top,
+			$ = (query, n1, n2,
+				n = Math.floor((n2 + n1) / 2)
+			) => query < list[n][0]
+			? $(query, n1, n)
+			: query < list[n + 1][0]
+			? n
+			: $(query, n + 1, n2)
+		) => query => last =
+			query < list[bottom][0]
+			? bottom
+			: query < list[top][0]
+			?
+				list[last][0] <= query && query < list[last + 1][0]
+				? last
+				: list[last + 1][0] <= query && query < list[last + 2][0]
+				? last + 1
+				: $(query, bottom, top)
+			: top - 1)
+		(timeline, 0, 0, timeline.length);
+
+
+
+		const song = $("#song");
+		const oncanplaythrough = () => {
+			song.removeEventListener("canplaythrough", oncanplaythrough);
+
+			const duration = song.duration * 1e3;
+			timeline.push([duration]);
+
+			let time = 0;
+			let offset;
+			const play = () => void (
+				song.currentTime = time < duration ? time / 1e3 : 0,
+				song.play()
+			);
+			const set_time = t => void (
+				time = t,
+				document.title = ((time,
+					min = Math.floor(time / 6e4),
+					sec = Math.floor(time % 6e4 / 1e3)
+				) => min + ":" + (sec >= 10 ? "" : "0") + sec)
+				(Math.min(duration, Math.max(0, duration - time)))
+			);
+			const set_offset = h => void (
+				offset = h,
+				main.style.transform = "translateY(" + -Math.floor(offset / 0.5) * 0.5 + "px)"
+			);
+			const update_time = time => void (
+				set_time(time),
+
+				set_offset(
+					((timeline, spans, n, time,
+						t = timeline[n][0],
+						h1 = spans[n].offsetHeight,
+						h2 = spans[n + 1].offsetHeight - h1
+					) => h1 + h2 * (time - t) / (timeline[n + 1][0] - t))
+					(timeline, n$span, $time(time), time))
+			);
+			const update_offset = offset => void (
+				set_offset(offset),
+
+				set_time(
+					((n,
+						t1 = timeline[n - 1][0],
+						t2 = timeline[n][0],
+						h1 = n$span[n - 1].offsetHeight,
+						h2 = n$span[n].offsetHeight
+					) => t1 + (offset - h1) * (t2 - t1) / (h2 - h1))
+					(span$n(document.elementFromPoint(
+						document.documentElement.clientWidth / 2,
+						document.documentElement.clientHeight / 2)) || timeline.length - 1))
+			);
+
+			let animation;
+			let is_playing = false;
+			const onplay = () => {
+				clearTimeout(animation);
+				animation = setTimeout(onplay, 70);
+				update_time(song.currentTime * 1e3);
+			};
+			song.addEventListener("play", () => {
+				is_playing = true;
+				onplay();
+			});
+			song.addEventListener("pause", () => {
+				is_playing = false;
+				update_time(song.currentTime * 1e3);
+				clearTimeout(animation);
+			});
+
+			let status;
+			let timer;
+			let last_event;
+			const onmousemove = () => {
+				clearTimeout(timer);
+				timer = null;
+				if(last_event){
+					const {clientX, clientY} = last_event;
+					last_event = null;
+					if(status){
+						let [x, y, time, is_playing, yy, k, is_clicking] = status;
+
+						const _offset = offset + yy / devicePixelRatio - clientY;
+						update_offset(_offset < 0 ? 0 : Math.min(_offset, marquee.offsetHeight));
+						if(is_clicking && (clientX * devicePixelRatio - x) ** 2 + (clientY * devicePixelRatio - y) ** 2 > k){
+							is_clicking = false;
+						}
+
+						status = [x, y, time, is_playing, clientY * devicePixelRatio, k, is_clicking];
+					}
+				}
+			};
+			addEventListener("mousedown", ({button, clientX, clientY}) => {
+				if(button === 0){
+					status = [
+						clientX * devicePixelRatio,
+						clientY * devicePixelRatio,
+						time,
+						is_playing,
+						clientY * devicePixelRatio,
+						13 * devicePixelRatio ** 2,
+						true,
+					];
+					song.pause();
+					setTimeout(() => void update_time(status[2]), 0);
+				}
+			});
+			addEventListener("mousemove", event => {
+				last_event = event;
+				if(!timer){
+					onmousemove();
+					timer = setTimeout(onmousemove, 25);
+				}
+			});
+			addEventListener("mouseup", ({button}) => {
+				onmousemove();
+				if(status && button === 0){
+					const [x, y, time, is_playing, k, pr2, is_clicking] = status;
+					if(is_clicking){
+						update_time(time);
+						if(!is_playing) play();
+					}else if(is_playing){
+						play();
+					}
+					status = null;
+				}
+			});
+
+			addEventListener("resize", () => {
+				if(is_playing){
+					onplay();
+				}else{
+					update_time(time);
+				}
+			});
+
+			play();
+		};
+		song.addEventListener("canplaythrough", oncanplaythrough);
+
+
+
+		addEventListener("dragstart", event => {
+			event.preventDefault();
+		});
+		addEventListener("contextmenu", () => {
+			document.getSelection().removeAllRanges();
+		});
+		addEventListener("mousedown", event => {
+			if(event.button === 0){
+				event.target.focus();
+				event.preventDefault();
+			}
+		});
+		addEventListener("scroll", () => {
+			scrollTo(0, 0);
+		});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>素数枚举</title>
+	<style>
+		body{
+			--padding:8px;
+			overflow:hidden;
+			margin:0;
+			font-size:15px;
+		}
+		input{
+			font-size:1em;
+			width:3.2em;
+			line-height:calc(1.25em + var(--padding));
+			height:calc(1.25em + var(--padding));
+			padding:0;
+			margin:0;
+			position:fixed;
+			top:0;
+			right:20px;
+		}
+		textarea{
+			font-size:1em;
+			font-family:monospace;
+			line-height:1.25em;
+			border:none;
+			overflow-y:scroll;
+			padding:var(--padding);
+			position:fixed;
+			top:0;
+			left:0;
+			width:calc(100% - 2*var(--padding));
+			height:calc(100% - 2*var(--padding));
+			resize:none;
+			outline:none;
+		}
+	</style>
+</head>
+
+<body>
+	<form autocomplete="off">
+		<textarea id="output" readonly spellcheck="false"></textarea>
+	</form>
+	<input type="button" id="button" value="重启">
+	<script>
+		'use strict';
+
+		const now=performance.now.bind(performance);
+		const round=Math.round;
+		const ceil=Math.ceil;
+		const sqrt=Math.sqrt;
+		const fill=Function.prototype.call.bind(Uint8Array.prototype.fill);
+		const output=document.getElementById('output');
+		function start(){
+			let txt='\n2, 3, 5';
+			let input=prompt('不超过1E+9的数:', '1E+8');
+			if(input){
+				let n=+input;
+				while(isNaN(n)||n>1e9){
+					input=prompt('不超过1E+9的数:', input);
+					if(input)
+						n=+input;
+					else{
+						document.title='操作取消';
+						return;
+					}
+				}
+				n=ceil(n);
+				if(n<6)
+					n=6;
+				document.title='内存分配中';
+				let list=fill(new Uint8Array(n+9), 1);
+				document.title='枚举中';
+				list[n]=list[n+1]=list[n+2]=list[n+3]=list[n+4]=list[n+5]=list[n+6]=list[n+7]=list[n+8]=0;
+				let i=7, j=9;
+				let ms=round(now()*1000)/1000;
+				for(; j<n; j+=30)
+					list[j]=list[j+12]=list[j+18]=list[j+24]=0;
+				for(let a, b, c, m, l=ceil(sqrt(n)); i<l; i+=4){
+					if(list[i]){
+						txt+=', '+i;
+						a=i+i;
+						b=a+a;
+						c=a+b;
+						m=b+c;
+						for(j=i*i; j<n; j+=m)
+							list[j]=list[j+a]=list[j+b]=list[j+c]=0;
+					}
+					i+=2;
+					if(list[i]){
+						txt+=', '+i;
+						a=i+i;
+						b=a+a;
+						c=a+b;
+						m=a+c;
+						for(j=i*i; j<n; j+=m)
+							list[j]=list[j+a]=list[j+b]=list[j+c]=0;
+					}
+					i+=2;
+					if(list[i]){
+						txt+=', '+i;
+						a=i+i;
+						c=i<<3;
+						b=c-a;
+						m=a+c;
+						for(j=i*i; j<n; j+=m)
+							list[j]=list[j+a]=list[j+b]=list[j+c]=0;
+					}
+					i+=2;
+					if(list[i]){
+						txt+=', '+i;
+						a=i<<2;
+						b=6*i;
+						c=a+a;
+						m=a+b;
+						for(j=i*i; j<n; j+=m)
+							list[j]=list[j+a]=list[j+b]=list[j+c]=0;
+					}
+				}
+				for(; i<n; i+=4){
+					if(list[i])
+						txt+=', '+i;
+					i+=2;
+					if(list[i])
+						txt+=', '+i;
+					i+=2;
+					if(list[i])
+						txt+=', '+i;
+					i+=2;
+					if(list[i])
+						txt+=', '+i;
+				}
+				ms=round(now()*1000)/1000-ms;
+				if(ms<60000)
+					output.value='小于'+n+'的素数: (枚举用时'+(ms<200?ms+'ms)':ms/1000+'s)');
+				else{
+					let sec=ms%60000;
+					output.value='小于'+n+'的素数: (枚举用时'+(ms-sec)/60000+':'+sec/1000+')';
+				}
+				document.title='显示中';
+				setTimeout(function(){
+					output.value+=txt+'.';
+					setTimeout(function(){
+						document.title='枚举结果';
+					}, 20);
+				}, 20);
+			}else
+				document.title='操作取消';
+		}
+		output.addEventListener('dragstart', function(event){
+			event.preventDefault();
+		});
+		addEventListener('load', function(){
+			document.title='欢迎';
+			document.getElementById('button').addEventListener('click', function() {
+				document.title='重启';
+				setTimeout(start, 0);
+			});
+			setTimeout(start, 0);
+		});
+	</script>
+</body>
+
+</html>
