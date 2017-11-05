@@ -20,5 +20,5 @@ const view_ips = code => {
 	(code.match(/href=('|").+?(?=\1>更多<\/a>)/ug) || []).forEach(async code => collect_ips(await force_fetch(code.slice(6))));
 	collect_ips(code);
 };
-const collect_ips = code => (code.match(/<p>.+?<\/p>/ug) || []).forEach(code => (code.match(/\d+\.\d+\.\d+\.\d+/ug) || []).forEach(ip => ips.add(ip)));
+const collect_ips = code => (code.match(/<p>[^]+?<\/p>/ug) || []).forEach(code => (code.match(/\d+\.\d+\.\d+\.\d+/ug) || []).forEach(ip => ips.add(ip)));
 const ips = new Set;
