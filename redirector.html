@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Confirm</title>
+</head>
+
+<body>
+	<script>"use strict";
+		const button = document.createElement("button");
+		button.textContent = "Continue";
+		button.addEventListener("click", document.location.replace.bind(document.location, atob(document.location.hash.slice(1))));
+		document.body.appendChild(button);
+	</script>
+</body>
+
+</html>
