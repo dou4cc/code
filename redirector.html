@@ -12,6 +12,7 @@
 		button.textContent = "Continue";
 		button.addEventListener("click", document.location.replace.bind(document.location, atob(document.location.hash.slice(1))));
 		document.body.appendChild(button);
+		button.focus();
 	</script>
 </body>
 
