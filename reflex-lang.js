@@ -86,10 +86,12 @@ const vm = () => {
 	const reflex0 = reflex();
 	const handles = multi_key_map();
 	reflex0.on("on", (...list) => {
-		const pattern = flatten1(unflatten1(list)[0]);
-		const pos = pattern.findIndex(a => a === 0);
-		const pattern1 = pattern.slice(pos);
-		handles.set("on", ...list, reflex0.on(...pattern.slice(0, pos), (...list) => {
+		const pattern = unflatten1(list)[0];
+		const flattened_pattern = flatten1(pattern);
+		const path = flattened_pattern.slice(0, flattened_pattern.indexOf(0));
+		handles.set("on", ...list, reflex0.on(...path, (...list) => {
+			const match_args = (pattern, list) => pattern.every((a, i) => a
+			list = path.concat(list);
 			const args = [, ];
 			if(!pattern1.every((a, i) => a === 0 ? args.push(flatten1(list[i])) : a === list[i])) return;
 		}));
