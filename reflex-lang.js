@@ -86,14 +86,30 @@ const vm = () => {
 	const reflex0 = reflex();
 	const handles = multi_key_map();
 	reflex0.on("on", (...list) => {
-		const pattern = unflatten1(list)[0];
+		if(handles.get("on", ...list)) return;
+		const trigger = unflatten1(list);
+		const pattern = trigger[0];
 		const flattened_pattern = flatten1(pattern);
 		const path = flattened_pattern.slice(0, flattened_pattern.indexOf(0));
-		handles.set("on", ...list, reflex0.on(...path, (...list) => {
-			const match_args = (pattern, list) => pattern.every((a, i) => a
-			list = path.concat(list);
+		handles.set("on", ...list, reflex0.on(...path.map(a => typeof a === "number" ? a - 1 : a), (...list) => {
+			const match = (pattern, list) => {
+				if(pattern === 0) return args.push(list);
+				if(pattern instanceof Array && list instanceof Array) return pattern.every((a, i) => match(a, list[i]));
+				if(typeof pattern === "number") return pattern - 1 === list;
+				return pattern === list;
+			};
 			const args = [, ];
-			if(!pattern1.every((a, i) => a === 0 ? args.push(flatten1(list[i])) : a === list[i])) return;
+			if(match(pattern, unflatten1(path.concat(list)))) unflatten1(flatten1(trigger.slice(1)).map(a => {
+				if(typeof a !== "number") return a;
+				if(a === 0) return trigger;
+				if(a < args.length) return args[a];
+				return a - args.length;
+			})).forEach(statement => reflex0.emit(flatten1(statement)));
 		}));
 	});
+	reflex0.on("off", (...list) => {
+	});
+	return {
+		exec: statement => reflex0.emit(flatten1(statement)),
+	};
 };
