@@ -10,8 +10,8 @@ const reflex = free => {
 			if(list.length) (children.get(list[0]) || {emit(){}}).emit(...list.slice(1));
 			listeners.forEach(f => f(...list));
 		},
-		on: (...list) => {
-			const [first, ...rest] = path.concat(list);
+		on: (...rest) => {
+			let first = (rest = path.concat(rest)).shift();
 			if(!rest.length){
 				first = first.bind();
 				listeners.add(first);
@@ -26,7 +26,7 @@ const reflex = free => {
 			}));
 			return children.get(first).on(...rest);
 		},
-		path: (...list) => f(path.concat(...list)),
+		path: (...list) => f(path.concat(list)),
 	});
 	return f([]);
 };
@@ -94,22 +94,26 @@ const vm = () => {
 		handles.set("on", ...list, reflex0.on(...path.map(a => typeof a === "number" ? a - 1 : a), (...list) => {
 			const match = (pattern, list) => {
 				if(pattern === 0) return args.push(list);
-				if(pattern instanceof Array && list instanceof Array) return pattern.every((a, i) => match(a, list[i]));
-				if(typeof pattern === "number") return pattern - 1 === list;
-				return pattern === list;
+				if(list.length > 1) return;
+				if(pattern instanceof Array && list[0] instanceof Array) return pattern.length <= list[0].length && list[0].splice(0, pattern.length - 1).map(a => [a]).concat(list).every((a, i) => match(pattern[i], a));
+				if(typeof pattern === "number") return pattern - 1 === list[0];
+				return pattern === list[0];
 			};
 			const args = [, ];
-			if(match(pattern, unflatten1(path.concat(list)))) unflatten1(flatten1(trigger.slice(1)).map(a => {
-				if(typeof a !== "number") return a;
-				if(a === 0) return trigger;
+			if(match(pattern, [unflatten1(path.concat(list))])) [].concat(...unflatten1(flatten1(trigger.slice(1)).map(a => {
+				if(typeof a !== "number") return [a];
+				if(a === 0) return [trigger];
 				if(a < args.length) return args[a];
-				return a - args.length;
-			})).forEach(statement => reflex0.emit(flatten1(statement)));
+				return [a - args.length];
+			}))).forEach(signal => reflex0.emit(...flatten1(signal)));
 		}));
 	});
-	reflex0.on("off", (...list) => {
-	});
+	reflex0.on("off", (...list) => (handles.get("on", ...list) || (() => {}))());
 	return {
-		exec: statement => reflex0.emit(flatten1(statement)),
+		emit: (...signals) => signals.forEach(signal => reflex0.emit(...flatten1(signal))),
+		on: (...path) => {
+			const listener = path.pop();
+			return reflex0.on(...path, (...list) => listener(...unflatten1(list)));
+		},
 	};
 };
