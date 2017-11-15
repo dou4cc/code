@@ -32,17 +32,18 @@ const reflex = free => {
 };
 
 const flatten = list => {
-	const start = Symbol();
+	const begin = Symbol();
 	const end = Symbol();
-	const f = list => [].concat(...list.map(a => a instanceof Array ? f([start, ...a, end]) : [a]));
-	return [start, end, f(list)];
+	const f = list => [].concat(...list.map(a => a instanceof Array ? f([begin, ...a, end]) : [a]));
+	return [begin, end, f(list)];
 };
 
-const unflatten = (start, end, [...list]) => {
-	const pos = list.indexOf(start);
-	if(pos < 0) return list;
-	const list1 = [];
-	list1.push(...unflatten(start, end, list.splice(pos, list.lastIndexOf(end) - pos + 1, list1).slice(1, -1)));
+const unflatten = (begin, end, [...list]) => {
+	let pos;
+	while((pos = list.indexOf(end)) >= 0){
+		const list1 = [];
+		list1.push(...list.splice(pos - (pos -= list.lastIndexOf(begin, pos)), pos + 1, list1).slice(1, -1));
+	}
 	return list;
 };
 
@@ -77,11 +78,11 @@ const multi_key_map = () => {
 
 const vm = () => {
 	const flatten1 = list => {
-		const [start, end] = [, , list] = flatten(list);
-		return list.map(a => a === start ? start0 : a === end ? end0 : a);
+		const [begin, end] = [, , list] = flatten(list);
+		return list.map(a => a === begin ? begin0 : a === end ? end0 : a);
 	};
-	const unflatten1 = list => unflatten(start0, end0, list);
-	const start0 = Symbol();
+	const unflatten1 = list => unflatten(begin0, end0, list);
+	const begin0 = Symbol();
 	const end0 = Symbol();
 	const reflex0 = reflex();
 	const handles = multi_key_map();
@@ -89,18 +90,17 @@ const vm = () => {
 		if(handles.get("on", ...list)) return;
 		const trigger = unflatten1(list);
 		const pattern = trigger[0];
-		const flattened_pattern = flatten1(pattern);
-		const path = flattened_pattern.slice(0, flattened_pattern.indexOf(0));
+		const list1 = flatten1(pattern);
+		const path = list1.slice(0, list1.concat(0).indexOf(0));
 		handles.set("on", ...list, reflex0.on(...path.map(a => typeof a === "number" ? a - 1 : a), (...list) => {
 			const match = (pattern, list) => {
 				if(pattern === 0) return args.push(list);
 				if(list.length > 1) return;
 				if(pattern instanceof Array && list[0] instanceof Array) return pattern.length <= list[0].length && list[0].splice(0, pattern.length - 1).map(a => [a]).concat(list).every((a, i) => match(pattern[i], a));
-				if(typeof pattern === "number") return pattern - 1 === list[0];
-				return pattern === list[0];
+				return (typeof pattern === "number" ? pattern - 1 : pattern) === list[0];
 			};
 			const args = [, ];
-			if(match(pattern, [unflatten1(path.concat(list))])) [].concat(...unflatten1(flatten1(trigger.slice(1)).map(a => {
+			if(match(pattern, [unflatten1(path.concat(list))])) unflatten1([].concat(...flatten1(trigger.slice(1)).map(a => {
 				if(typeof a !== "number") return [a];
 				if(a === 0) return [trigger];
 				if(a < args.length) return args[a];
@@ -117,3 +117,13 @@ const vm = () => {
 		},
 	};
 };
+
+/*test*
+
+var vm0 = vm();
+vm0.on("+", (a, b, ...rest) => rest.length || vm0.emit(["+", a, b, (+a + +b).toString()]));
+vm0.on("echo", console.log);
+vm0.emit(["on", ["+", 0, 0, 0], ["echo", 1, "+", 2, "=", 3]]);
+vm0.emit(["+", "1", "1"]);
+
+//*/
