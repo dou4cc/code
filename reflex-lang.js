@@ -121,7 +121,11 @@ const vm = () => {
 const str2list = source => {
 	source = source.replace(/\r\n?/gu, "\n");
 	const words = source.match(/`(?:\\`|[^`])*`|[[\]]|(?:(?!\])\S)+/gu);
-	return unflatten("[", "]", words.map(a => /^[[\]]$/u.test(a) ? a : /^`.*`$/u.test(a) ? {flag: "`", content: a.slice(1, -1)} : {flag: "", content: a}));
+	return unflatten("[", "]", words.map(a => {
+		if(/^[[\]]$/u.test(a)) return a;
+		if(/^`.*`$/u.test(a)) return {flag: "`", content: a.slice(1, -1).replace(/\\(\\*`)/gu, "$1")};
+		return {flag: "", content: a};
+	}));
 };
 
 const list2signals = source => {
