@@ -118,6 +118,17 @@ const vm = () => {
 	};
 };
 
+const str2list = source => {
+	source = source.replace(/\r\n?/gu, "\n");
+	const words = source.match(/`(?:\\`|[^`])*`|[[\]]|(?:(?!\])\S)+/gu);
+	return unflatten("[", "]", words.map(a => /^[[\]]$/u.test(a) ? a : /^`.*`$/u.test(a) ? {flag: "`", content: a.slice(1, -1)} : {flag: "", content: a}));
+};
+
+const list2signals = source => {
+};
+
+const str2signals = source => list2signals(str2list(source));
+
 /*test*
 
 var vm0 = vm();
