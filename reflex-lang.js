@@ -31,18 +31,20 @@ const reflex = free => {
 	return f([]);
 };
 
+const same_list = (a, b) => a && a.length === b.length && a.every((a, i) => a === b[i] || Object.is(a, b[i]));
+
 const flatten = (listify, ...list) => {
 	listify = listify || (a => a instanceof Array ? a : null);
 	const begin = Symbol();
 	const end = Symbol();
-	const used = new Set;
-	const holes = new Set;
-	const f = list => [].concat(...list.map(a => {
-		if(used.has(a) && holes.add(a) || !listify(a)) return [a];
-		used.add(a);
-		return [begin, ...f(listify(a)), end];
+	const hole2symbol = new Map;
+	const f = (list, used) => [].concat(...list.map(a => {
+		if(!listify(a)) return [a];
+		if(!used.includes(a)) return [begin, ...f(listify(a), used.concat([a])), end];
+		if(!holes.has(a)) holes.add(a, Symbol());
+		return [holes.get(a)];
 	}));
-	return [holes, begin, end, ...f(list)];
+	return [holes, begin, end, ...f(list, [])];
 };
 
 const unflatten = (unlistify, begin, end, ...list) => {
@@ -80,8 +82,6 @@ const multi_key_map = () => {
 	};
 };
 
-const same_list = (a, b) => a && a.length === b.length && a.every((a, i) => a === b[i] || Object.is(a, b[i]));
-
 const cache = f => {
 	let args;
 	let result;
@@ -110,8 +110,9 @@ const is_char = a => typeof a === "string" && a.length === 1;
 const vm = () => {
 	const listify = cache(a => a instanceof Array ? a : typeof a === "string" ? Array.from(a) : null);
 	const flatten1 = (...list) => {
-		const [, begin1, end1] = [, , , ...list] = flatten(listify, ...list);
-		return list.map(a => a === begin1 ? begin : a === end1 ? end : a);
+		const [map, begin1, end1] = [, , , ...list] = flatten(listify, ...list);
+		[[begin1, begin], [end1, end]].forEach(args => map.set(...args));
+		return list.map(a => map.has(a) ? map.get(a) : a);
 	};
 	const unflatten1 = (...list) => unflatten(list => list.every(is_char) ? list.join("") : list, begin, end, ...list);
 	const on = (path, listener) => reflex0.on(...flatten1(path).slice(0, ...listify(path) ? [-1] : []), (...list) => listener(...unflatten1(...list.slice(0, -1))));
