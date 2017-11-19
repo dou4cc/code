@@ -114,14 +114,17 @@ const is_char = a => typeof a === "string" && a.length === 1;
 
 const vm = () => {
 	const listify = cache(a => a instanceof Array ? a : typeof a === "string" ? Array.from(a) : null);
-	const flatten1 = (...list) => {
-		const [map, begin1, end1] = [, , , ...list] = flatten(listify, ...list);
-		[[begin1, begin], [end1, end]].forEach(args => map.set(...args));
-		return list.map(a => map.has(a) ? map.get(a) : a);
-	};
 	const unflatten1 = (...list) => unflatten(list => list.every(is_char) ? list.join("") : list, begin, end, ...list);
+	const flatten1 = (...list) => {
+		const f = (...list) => {
+			const [map, begin1, end1] = [, , , ...list] = flatten(listify, ...list);
+			[[begin1, begin], [end1, end]].forEach(args => map.set(...args));
+			return list.map(a => map.has(a) ? map.get(a) : a);
+		};
+		return f(...unflatten1(...f(...list)));
+	};
 	const on = (path, listener) => reflex0.on(...flatten1(path).slice(0, ...listify(path) ? [-1] : []), (...list) => listener(...unflatten1(...list.slice(0, -1))));
-	const emit = (...signals) => signals.forEach(signal => reflex0.emit(...flatten1(...unflatten1(...flatten1(signal)))));
+	const emit = (...signals) => signals.forEach(signal => reflex0.emit(...flatten1(signal)));
 	const begin = Symbol();
 	const end = Symbol();
 	const reflex0 = reflex();
@@ -129,7 +132,7 @@ const vm = () => {
 	reflex0.on(begin, ...flatten1("on"), (...list) => {
 		if(handles.get(begin, ...flatten1("on"), ...list)) return;
 		const [pattern, ...effects] = unflatten1(...list.slice(0, -1));
-		const list1 = flatten1(...pattern);
+		const list1 = flatten1(pattern);
 		const path = list1.slice(0, list1.concat(0).indexOf(0));
 		handles.set(begin, ...flatten1("on"), ...list, reflex0.on(...path.map(a => typeof a === "number" ? a - 1 : a), (...list) => {
 			const match = (pattern, ...list) => {
