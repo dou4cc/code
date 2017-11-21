@@ -120,11 +120,8 @@ const vm = () => {
 	reflex0.on(begin, "match", (...list) => unflatten1(...list.slice(0, -1)).forEach(signal => reflex1.emit(...flatten1(signal))));
 	return {
 		emit,
-		on: (path, listener) => {
-			if(!listener) reflex0.on((...list) => path(...unflatten1(...list)));
-			reflex0.on(...flatten1(path).slice(0, ...Array.isArray(path) ? [-1] : []), (...list) => listener(...unflatten1(...list.slice(0, -1))));
-		},
-		exec: code => emit(...code2signals(code)),
+		on: (path, listener) => listener ? reflex0.on(...flatten1(path).slice(0, ...Array.isArray(path) ? [-1] : []), (...list) => listener(...unflatten1(...list.slice(0, -1)))) : reflex0.on((...list) => path(...unflatten1(...list))),
+		exec: async code => emit(...await code2signals(code)),
 	};
 };
 
@@ -143,10 +140,30 @@ const code2ast = source => {
 	}));
 };
 
-const ast2signals = source => {
+const ast2signals = async source => {
+	const [begin, end, ...list] = flatten(...source);
+	for(let i in list){
+		if(typeof list[i] !== "object") continue;
+		let {content} = list[i];
+		if(list[i].flag || !content.startsWith("%")){
+			list[i] = content;
+			continue;
+		}
+		content = (content.length % 2 ? "" : "0") + content.slice(1);
+		const reader = new FileReader;
+		const result = new Promise((resolve, reject) => {
+			reader.addEventListener("load", () => resolve(reader.result));
+			reader.addEventListener("error", ({error}) => reject(error));
+		});
+		reader.readAsBinaryString(new Blob([new Uint8Array(content.length / 2).map((_, i) => Number.parseInt(content.substr(i * 2, 2), 16))]));
+		list[i] = await result;
+	}
+	return unflatten(begin, end, ...list);
 };
 
-const code2signals = source => ast2signals(code2ast(source));
+const code2signals = async source => await ast2signals(code2ast(source));
+
+vm;
 
 /*test*
 var vm0 = vm();
