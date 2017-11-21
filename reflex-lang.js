@@ -77,7 +77,7 @@ const multi_key_map = () => {
 const vm = () => {
 	const flatten1 = (...list) => {
 		const [begin1, end1] = [, , ...list] = flatten(...list);
-		return list.map(a => a === begin1 ? begin : a === end1 ? end1 : a);
+		return list.map(a => a === begin1 ? begin : a === end1 ? end : a);
 	};
 	const unflatten1 = (...list) => unflatten(begin, end, ...list);
 	const on = (path, listener) => reflex0.on(...flatten1(path).slice(0, ...Array.isArray(path) ? [-1] : []), (...list) => listener(...unflatten1(...list.slice(0, -1))));
@@ -100,7 +100,7 @@ const vm = () => {
 				return pattern.length <= list[0].length && (!list[0].length || list[0].splice(0, pattern.length - 1).map(a => [a]).concat(list).every((a, i) => match(pattern[i], ...a)));
 			};
 			const args = [[pattern, ...effects]];
-			if(match(pattern, ...unflatten1(...path, ...list))) emit(...unflatten1([].concat(...flatten1(...effects).map(a => !Number.isInteger(a) || a < 0 ? a : a < args.length ? args[a] : a - args.length))));
+			if(match(pattern, ...unflatten1(...path, ...list))) emit(...unflatten1(...[].concat(...flatten1(...effects).map(a => !Number.isInteger(a) || a < 0 ? a : a < args.length ? args[a] : a - args.length))));
 		}));
 	});
 	reflex0.on(begin, "off", (...list) => (handles.get(...list) || (() => {}))());
