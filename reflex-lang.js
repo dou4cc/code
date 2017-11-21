@@ -80,33 +80,50 @@ const vm = () => {
 		return list.map(a => a === begin1 ? begin : a === end1 ? end : a);
 	};
 	const unflatten1 = (...list) => unflatten(begin, end, ...list);
-	const on = (path, listener) => reflex0.on(...flatten1(path).slice(0, ...Array.isArray(path) ? [-1] : []), (...list) => listener(...unflatten1(...list.slice(0, -1))));
 	const emit = (...signals) => signals.forEach(signal => reflex0.emit(...flatten1(signal)));
 	const begin = Symbol();
 	const end = Symbol();
 	const reflex0 = reflex();
+	const reflex1 = reflex();
 	const handles = multi_key_map();
 	reflex0.on(begin, "on", (...list) => {
-		const escape = a => Number.isInteger(a) && a > 0 ? a - 1 : a;
+		const is_token = a => typeof a === "string" && /^\$*$/u.test(a);
+		const escape = a => is_token(a) ? a.slice(1) : a;
+		const match = list => {
+			const f = (pattern, ...list) => {
+				if(pattern === "") return args.push(list);
+				if(list.length > 1) return;
+				if(!Array.isArray(pattern) || !Array.isArray(list[0])) return list.includes(escape(pattern));
+				return pattern.length <= list[0].length && (!list[0].length || list[0].splice(0, pattern.length - 1).map(a => [a]).concat(list).every((a, i) => f(pattern[i], ...a)));
+			};
+			const args = [[pattern, ...effects]];
+			return f(pattern, ...unflatten1(...path, ...list)) && args;
+		};
 		if(handles.get(...list)) return;
 		const [pattern, ...effects] = unflatten1(...list.slice(0, -1));
 		const list1 = flatten1(pattern);
-		const path = list1.slice(0, list1.concat(0).indexOf(0));
-		handles.set(...list, reflex0.on(...path.map(escape), (...list) => {
-			const match = (pattern, ...list) => {
-				if(pattern === 0) return args.push(list);
-				if(list.length > 1) return;
-				if(!Array.isArray(pattern) || !Array.isArray(list[0])) return list.includes(escape(pattern));
-				return pattern.length <= list[0].length && (!list[0].length || list[0].splice(0, pattern.length - 1).map(a => [a]).concat(list).every((a, i) => match(pattern[i], ...a)));
-			};
-			const args = [[pattern, ...effects]];
-			if(match(pattern, ...unflatten1(...path, ...list))) emit(...unflatten1(...[].concat(...flatten1(...effects).map(a => !Number.isInteger(a) || a < 0 ? a : a < args.length ? args[a] : a - args.length))));
-		}));
+		const path = list1.slice(0, list1.concat("").indexOf("")).map(escape);
+		handles.set(...list, [
+			reflex0.on(...path, (...list) => {
+				const args = match(list);
+				if(args) emit(...unflatten1(...[].concat(...flatten1(...effects).map(a => is_token(a) ? a.length < args.length ? args[a.length] : a.slice(args.length) : a))));
+			}),
+			reflex1.on(...path, (...list1) => match(list1) && reflex0.emit(begin, "on", ...list)),
+		]);
 	});
-	reflex0.on(begin, "off", (...list) => (handles.get(...list) || (() => {}))());
+	reflex0.on(begin, "off", (...list) => {
+		const handle = handles.get(...list);
+		if(!handle) return;
+		handle.forEach(f => f());
+		handles.set(...list, undefined);
+	});
+	reflex0.on(begin, "match", (...list) => unflatten1(...list.slice(0, -1)).forEach(signal => reflex1.emit(...flatten1(signal))));
 	return {
-		on,
 		emit,
+		on: (path, listener) => {
+			if(!listener) reflex0.on((...list) => path(...unflatten1(...list)));
+			reflex0.on(...flatten1(path).slice(0, ...Array.isArray(path) ? [-1] : []), (...list) => listener(...unflatten1(...list.slice(0, -1))));
+		},
 		exec: code => emit(...code2signals(code)),
 	};
 };
@@ -116,7 +133,12 @@ const code2ast = source => {
 	const words = source.match(/`(?:\\`|[^`])*`|[[\]]|(?:(?!\]|;)\S)+|;.*/gu);
 	return unflatten("[", "]", ...words.filter(a => !a.startsWith(";")).map(a => {
 		if(/^[[\]]$/u.test(a)) return a;
-		if(/^`.*`$/u.test(a)) return {flag: "`", content: a.slice(1, -1).replace(/\\(\\*`)/gu, "$1")};
+		if(/^`.*`$/u.test(a)) return {flag: "`", content:
+			a.slice(1, -1)
+			.replace(/\\(\\*`)/gu, "$1")
+			.replace(/(^|[^\\])\\[nrt]/gu, ($, $1) => $1 + {n: "\n", r: "\r", t: "\t"}[$1])
+			.replace(/(^|[^\\])\\([0-9a-f]+);/giu, ($, $1, $2) => $1 + String.fromCodePoint(Number.parseInt($2, 16)))
+			.replace(/\\(\\+(?:[0-9A-Fa-f]+;|[nrt]))/gu, "$1")};
 		return {flag: "", content: a};
 	}));
 };
@@ -130,6 +152,6 @@ const code2signals = source => ast2signals(code2ast(source));
 var vm0 = vm();
 vm0.on(["+"], (a, b, ...rest) => rest.length || vm0.emit(["+", a, b, (+a + +b).toString()]));
 vm0.on(["log"], console.log);
-vm0.emit(["on", ["+", 0, 0, 0], ["log", 1, "+", 2, "=", 3]]);
+vm0.emit(["on", ["+", "", "", ""], ["log", "$", "+", "$$", "=", "$$$"]]);
 vm0.emit(["+", "1", "1"]);
 //*/
