@@ -145,18 +145,24 @@ const ast2signals = async source => {
 	for(let i in list){
 		if(typeof list[i] !== "object") continue;
 		let {content} = list[i];
-		if(list[i].flag || !content.startsWith("%")){
-			list[i] = content;
-			continue;
+		if(!list[i].flag){
+			if(content.startsWith("%")){
+				content = (content.length % 2 ? "" : "0") + content.slice(1);
+				const reader = new FileReader;
+				const result = new Promise((resolve, reject) => {
+					reader.addEventListener("load", () => resolve(reader.result));
+					reader.addEventListener("error", ({error}) => reject(error));
+				});
+				reader.readAsBinaryString(new Blob([new Uint8Array(content.length / 2).map((_, i) => Number.parseInt(content.substr(i * 2, 2), 16))]));
+				list[i] = await result;
+				continue;
+			}
+			if(content.startsWith("$")){
+				list[i] = "$".repeat(content.slice(1));
+				continue;
+			}
 		}
-		content = (content.length % 2 ? "" : "0") + content.slice(1);
-		const reader = new FileReader;
-		const result = new Promise((resolve, reject) => {
-			reader.addEventListener("load", () => resolve(reader.result));
-			reader.addEventListener("error", ({error}) => reject(error));
-		});
-		reader.readAsBinaryString(new Blob([new Uint8Array(content.length / 2).map((_, i) => Number.parseInt(content.substr(i * 2, 2), 16))]));
-		list[i] = await result;
+		list[i] = content;
 	}
 	return unflatten(begin, end, ...list);
 };
