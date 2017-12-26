@@ -8,11 +8,13 @@
 
 <body>
 	<script>"use strict";
-		const button = document.createElement("button");
-		button.textContent = "Continue";
-		button.addEventListener("click", document.location.replace.bind(document.location, atob(document.location.hash.slice(1))));
-		document.body.appendChild(button);
-		button.focus();
+		(function(){
+			var button = document.createElement("button");
+			button.textContent = "Continue";
+			button.addEventListener("click", document.location.replace.bind(document.location, atob(document.location.hash.slice(1))));
+			document.body.appendChild(button);
+			button.focus();
+		})();
 	</script>
 </body>
 
