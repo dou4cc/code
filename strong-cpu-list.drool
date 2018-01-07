@@ -1,0 +1,13 @@
+﻿Below are strong CPUs which have nothing to do with Meltdown or Spectre (probably not completely):
+
+- x86
+  - Intel Atom
+    - Bonnell
+      - Lincroft	45nm	2011
+        - Z650	1 core(s)	1.2GHz
+        - Z670	1 core(s)	1.5GHz
+      - Cloverview	32nm	2013
+        - Z2520	2 core(s)	1.2GHz
+        - Z2560	2 core(s)	1.6GHz
+        - Z2580	2 core(s)	2GHz
+        - Z2760	2 core(s)	1.8GHz
