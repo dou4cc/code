@@ -5,19 +5,16 @@
 	<meta charset="utf-8">
 	<title>Jumping</title>
 	<base href="about:blank">
-</head>
-
-<body>
-	Invalid URL<script>"use strict";
+	<script>"use strict";
 		try{
 			setTimeout(function(){
 				document.location = "about:blank";
-			}, 5000);
+			}, 5e3);
 			document.location = document.title = document.location.hash.slice(1);
 		}catch(error){
 			document.location = "about:blank";
 		}
 	</script>
-</body>
+</head>
 
 </html>
