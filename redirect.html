@@ -6,10 +6,12 @@
 	<title>Jumping</title>
 	<base href="about:blank">
 	<script>"use strict";
-		document.location = document.title = document.location.hash.slice(1);
+		try{
+			document.location = document.title = document.location.hash.slice(1);
+		}catch(error){
+			document.location = "about:blank";
+		}
 	</script>
 </head>
-
-<body>Invalid URL</body>
 
 </html>
