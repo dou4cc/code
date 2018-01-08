@@ -8,9 +8,11 @@
 </head>
 
 <body>
-	Invalid URL<iframe src="about:blank" style="width:0; height:0"></iframe>
-	<script>"use strict";
+	Invalid URL<script>"use strict";
 		try{
+			setTimeout(function(){
+				document.location = "about:blank";
+			}, 5000);
 			document.location = document.title = document.location.hash.slice(1);
 		}catch(error){
 			document.location = "about:blank";
