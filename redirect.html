@@ -5,9 +5,12 @@
 	<meta charset="utf-8">
 	<title>Jumping</title>
 	<base href="about:blank">
-	<script>"use strict";
-		document.location.assign(document.location.hash.slice(1));
-	</script>
 </head>
+
+<body>
+	<script>"use strict";
+		addEventListener("load", setTimeout.bind(null, document.location.assign.bind(document.location, document.location.hash.slice(1))));
+	</script>
+</body>
 
 </html>
