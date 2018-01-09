@@ -8,12 +8,12 @@ javascript:{
 		document.head.appendChild(base);
 		iframe.src = url;
 		url = iframe.src;
-		url = url.replace(archiveis_reg, "https://archive.is/");
+		url = url.replace(archiveis_reg, archiveis_base);
 		if(url !== (url = url.replace(/^https:\/\/archive\.is\/o\/(?:[A-Za-z0-9]{4,}\/)?/u, ""))) return f(url);
 		url =
 			archiveis_reg.test(url)
 			? url
-			: "https://archive.is/?run=1&url=" + encodeURIComponent("https://4r.gitlab.io/#" + url);
+			: archiveis_base + "?run=1&url=" + encodeURIComponent(redirector + url);
 		if(!archiveis_reg.test(document.location) && web_reg.test(document.location)){
 			open(url);
 		}else{
@@ -22,9 +22,11 @@ javascript:{
 	};
 	const web_reg = /^https?:/u;
 	const base = document.createElement("base");
-	base.href = "https://"
+	base.href = "https://";
 	const iframe = document.createElement("iframe");
 	const archiveis_reg = /^https?:\/\/archive\.(?:is|today)\//u;
+	const archiveis_base = "https://archive.is/";
+	const redirector = "https://4r.gitlab.io/#";
 	f(prompt("URL:", web_reg.test(document.location) ? document.location : ""));
 	base.remove();
 }
