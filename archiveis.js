@@ -1,5 +1,5 @@
 ﻿//min
-javascript:((d,c,p,h,l=d.URL,b=/^https?:/.test(l),f=(r,t,u)=>{t!=u&&(u=d[c]('a'),u.href=t,d.head.appendChild(t=d[c]('base')).href=h,u=u.href,t.remove(),t=h+'archive.is/',u=u[p](/^https?:\/\/archive\.(is|today)\//,t),u==(u=u[p](r('^'+t+'o/(((?!_)\\w){4,}/)?'),''))?(r=r('^'+t),u=r.test(u)?u:t+'?run=1&url='+encodeURIComponent(h+'4r.gitlab.io/#'+u),!r.test(l)&b?open(u):location=u):f(r,u))})=>f(RegExp,prompt('URL:',b?l:'')))(document,'createElement','replace','https://')
+javascript:((d,c,p,h,l=d.URL,b=/^https?:/.test(l),f=(r,t,u)=>{t!=u&&(u=d[c]("a"),u.href=t,d.head.appendChild(t=d[c]("base")).href=h,u=u.href,t.remove(),t=h+"archive.is/",u=u[p](/^https?:\/\/archive\.(is|today)\//,t),u==(u=u[p](r("^"+t+"o/(((?!_)\\w){4,}/)?"),""))?(r=r("^"+t),u=r.test(u)?u:t+"?run=1&url="+encodeURIComponent(h+"4r.gitlab.io/#"+u),!r.test(l)&b?open(u):location=u):f(r,u))})=>f(RegExp,prompt("URL:",b?l:"")))(document,"createElement","replace","https://")
 
 //source
 javascript:{
