@@ -1,5 +1,5 @@
 ﻿//min
-javascript:((d,c,p,h,l=d.URL,b=/^https?:/.test(l),f=(r,t,u)=>{t!=u&&(u=d[c]("a"),u.href=t,d.head.appendChild(t=d[c]("base")).href=h,u=u.href,t.remove(),t=h+"archive.is/",u=u[p](/^https?:\/\/archive\.(is|today)\//,t),u==(u=u[p](r("^"+t+"o/(((?!_)\\w){4,}/)?"),""))?(r=r("^"+t),u=r.test(u)?u:t+"?run=1&url="+encodeURIComponent(h+"4r.gitlab.io/#"+u),!r.test(l)&b?open(u):location=u):f(r,u))})=>f(RegExp,prompt("URL:",b?l:"")))(document,"createElement","replace","https://")
+javascript:((d,c,p,h,l=d.URL,b=/^https?:/.test(l),f=(r,t,u)=>{t!=u&&(u=d[c]("a"),u.href=t,d.head.appendChild(t=d[c]("base")).href=h,u=u.href,t.remove(),t=h+"archive.is/",u=u[p](/^https?:\/\/archive\.(is|today)\//,t),u==(u=u[p](r("^"+t+"o/(((?!_)\\w){4,}/)?"),""))?(r=r("^"+t),u=r.test(u)?u:t+"?run=1&url="+encodeURIComponent(h+"4r.gitlab.io/#"+u),!r.test(l)&b?open(u):location=u):f(r,u))})=>f(RegExp,prompt("URL:"+"\40".repeat(76),b?l:"")))(document,"createElement","replace","https://")
 
 //source
 javascript:{
@@ -13,7 +13,7 @@ javascript:{
 		url =
 			archiveis_reg.test(url)
 			? url
-			: archiveis_base + "?run=1&url=" + encodeURIComponent(redirector + url);
+			: archiveis_base + "?run=1&url=" + encodeURIComponent(redirector(url));
 		if(!archiveis_reg.test(document.location) && web_reg.test(document.location)){
 			open(url);
 		}else{
@@ -26,7 +26,7 @@ javascript:{
 	const iframe = document.createElement("iframe");
 	const archiveis_reg = /^https?:\/\/archive\.(?:is|today)\//u;
 	const archiveis_base = "https://archive.is/";
-	const redirector = "https://4r.gitlab.io/#";
-	f(prompt("URL:", web_reg.test(document.location) ? document.location : ""));
+	const redirector = target => "https://4r.gitlab.io/#" + url;
+	f(prompt("URL:" + " ".repeat(76), web_reg.test(document.location) ? document.location : ""));
 	base.remove();
 }
