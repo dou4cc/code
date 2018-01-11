@@ -26,7 +26,7 @@ javascript:{
 	const iframe = document.createElement("iframe");
 	const archiveis_reg = /^https?:\/\/archive\.(?:is|today)\//u;
 	const archiveis_base = "https://archive.is/";
-	const redirector = target => "https://4r.gitlab.io/#" + url;
+	const redirector = target => "https://4r.gitlab.io/#" + target;
 	f(prompt("URL:" + " ".repeat(76), web_reg.test(document.location) ? document.location : ""));
 	base.remove();
 }
