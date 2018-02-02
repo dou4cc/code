@@ -1,3 +1,5 @@
+//Invalid implement
+
 "use strict";
 
 const guid = () => {
@@ -12,6 +14,7 @@ const guid = () => {
 const db_name = () => "ondestruct/" + guid();
 
 indexedDB.open;
+document.cookie;
 
 const ref = new WeakMap;
 
@@ -30,8 +33,8 @@ const ondestruct = (target, listener) => new Promise((resolve, reject) => {
 		cn.addEventListener("upgradeneeded", () => {
 			const ondelete = () => listener();
 			cn.removeEventListener("error", onfail);
+			cn.addEventListener("error", reject);
 			cn.removeEventListener("success", onopen);
-			cn.result.createObjectStore("store", {keyPath: "key"});
 			const promise = new Promise(resolve => cn.addEventListener("success", resolve));
 			ref.set(target, cn.result);
 			const del = indexedDB.deleteDatabase(cn.result.name);
