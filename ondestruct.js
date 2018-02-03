@@ -33,7 +33,7 @@ const ondestruct = (target, listener) => new Promise((resolve, reject) => {
 		cn.addEventListener("upgradeneeded", () => {
 			const ondelete = () => listener();
 			cn.removeEventListener("error", onfail);
-			cn.addEventListener("error", reject);
+			cn.addEventListener("error", () => reject(cn.error));
 			cn.removeEventListener("success", onopen);
 			const promise = new Promise(resolve => cn.addEventListener("success", resolve));
 			ref.set(target, cn.result);
