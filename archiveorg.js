@@ -1,5 +1,5 @@
 //min
-javascript:((d,s,c,p,h,i,l=d.URL,w=l=="about:blank",b=/^https?:/.test(l),f=(r,t,u)=>t!=u?(u=d[c]("a"),u.href=t,d.head.appendChild(t=d[c]("base")).href=h,u=u.href,t.remove(),t=h+"archive.is/",u=u[p](/^https?:\/\/archive\.(is|today)\//,t),u==(u=u[p](r("^"+t+"o/(((?!_)\\w){4,}/)?"),""))?(r=r("^"+t),u=r.test(u)?u:t+"?run=1&url="+encodeURIComponent(h+"web.archive.org/save/"+u),!r.test(l)&b?open(u):location=u):f(r,u)):w&d.readyState[0]=="u"?location=l:0,g=_=>f(RegExp,prompt("URL:"+"\40".repeat(96),b?l:"")))=>{w&!d[i]?s(_=>s(g,d[i]=""),d[i]="Loading"):g()})(document,setTimeout,"createElement","replace","https://","title")
+javascript:((d,s,c,p,h,i,l=d.URL,w=l=="about:blank",b=/^https?:/.test(l),f=(r,t,u)=>t!=u?(u=d[c]("a"),u.href=t,d.head.appendChild(t=d[c]("base")).href=h,u=u.href,t.remove(),t=h+"archive.is/",u=u[p](/^https?:\/\/archive\.(is|today)\//,t),u==(u=u[p](r("^"+t+"o/(((?!_)\\w){4,}/)?"),""))?(r=r("^"+t),u=r.test(u)?u:t+"?run=1&url="+encodeURIComponent(h+"4r.gitlab.io/#"+h+"web.archive.org/save/"+u),!r.test(l)&b?open(u):location=u):f(r,u)):w&d.readyState[0]=="u"?location=l:0,g=_=>f(RegExp,prompt("URL:"+"\40".repeat(96),b?l:"")))=>{w&!d[i]?s(_=>s(g,d[i]=""),d[i]="Loading"):g()})(document,setTimeout,"createElement","replace","https://","title")
 
 //source
 javascript:{
@@ -27,7 +27,7 @@ javascript:{
 	const iframe = document.createElement("iframe");
 	const archiveis_reg = /^https?:\/\/archive\.(?:is|today)\//u;
 	const archiveis_base = "https://archive.is/";
-	const redirector = target => "https://web.archive.org/save/" + target;
+	const redirector = target => "https://4r.gitlab.io/#https://web.archive.org/save/" + target;
 	if(document.location.href === "about:blank" && document.title === ""){
 		document.title = "Loading";
 		setTimeout(() => {
