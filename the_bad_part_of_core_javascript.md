@@ -1,2 +1,3 @@
 - JSON
 - Generator
+- Class
